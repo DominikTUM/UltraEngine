@@ -3,6 +3,7 @@
 #include "framework.h"
 
 #define LENGTH 100
+
 namespace UltraEngine {
 	namespace WindowManagement {
 
@@ -10,14 +11,34 @@ namespace UltraEngine {
 
 		class Window {
 		public:
-			HINSTANCE hInstance;
-			HWND handle;
-			WCHAR title[LENGTH] = TEXT("UltraEngine");
-			WCHAR registerClass[LENGTH];
+			HINSTANCE hInstance;						// Instance handle
+			HWND handle;								// Window handle
+			WCHAR title[LENGTH] = TEXT("UltraEngine");  // Window title
+			WCHAR registerClass[LENGTH];				// WIndow class
 
-			Window(HINSTANCE instance, HWND windowHandle) : hInstance(instance), handle(windowHandle) { }
+			/*
+			 * Set instance handle and window handle
+			 */
+			Window(HINSTANCE instance, HWND windowHandle) : hInstance(instance), handle(windowHandle) {	}
+
+			/*
+			 * Initialize window
+			 */
+			bool init(int nCmdShow) {
+				LoadStringW(hInstance, IDS_APP_TITLE, title, LENGTH);
+				LoadStringW(hInstance, IDC_ULTRAENGINE, registerClass, LENGTH);
+				myRegisterClass(hInstance);
+				
+				// Try to hide menu bar, doesnt work...
+				SetMenu(handle, GetMenu(handle));
+
+				// Init window
+				initInstance(hInstance, nCmdShow);	
+
+				return true;
+			}
 	
-			ATOM MyRegisterClass(HINSTANCE hInstance)
+			ATOM myRegisterClass(HINSTANCE hInstance)
 			{
 				WNDCLASSEXW wcex;
 
@@ -38,7 +59,7 @@ namespace UltraEngine {
 				return RegisterClassExW(&wcex);
 			}
 
-			BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+			BOOL initInstance(HINSTANCE hInstance, int nCmdShow)
 			{
 
 				HWND hWnd = CreateWindowW(registerClass, title, WS_OVERLAPPEDWINDOW,
@@ -55,35 +76,26 @@ namespace UltraEngine {
 				return TRUE;
 			}
 
+			/*
+			 * Handle window events
+			 */
 			friend LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 			
 		};
 
+		
 		LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			switch (message)
 			{
 			case WM_COMMAND:
 			{
-				int wmId = LOWORD(wParam);
-				// Menüauswahl analysieren:
-				switch (wmId)
-				{
-
-				case IDM_EXIT:
-					DestroyWindow(hWnd);
-					break;
-				default:
-					return DefWindowProc(hWnd, message, wParam, lParam);
-				}
+				return DefWindowProc(hWnd, message, wParam, lParam);		
 			}
 			break;
 			case WM_PAINT:
 			{
-				PAINTSTRUCT ps;
-				HDC hdc = BeginPaint(hWnd, &ps);
-				// TODO: Zeichencode, der hdc verwendet, hier einfügen...
-				EndPaint(hWnd, &ps);
+				
 			}
 			break;
 			case WM_DESTROY:
