@@ -1,5 +1,7 @@
 #pragma once
+
 #include "framework.h"
+
 namespace UltraEngine {
 	class ApplicationController {
 	public:

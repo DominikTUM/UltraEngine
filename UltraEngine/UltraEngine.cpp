@@ -1,5 +1,3 @@
-// UltraEngine.cpp : Definiert den Einstiegspunkt für die Anwendung.
-//
 
 #include "UltraEngine.h"
 
@@ -19,21 +17,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // Wrap window information into object
+    // Initalize window
 	UltraEngine::WindowManagement::Window window(hInstance, nullptr);
-
-    // Globale Zeichenfolgen initialisieren
-    LoadStringW(hInstance, IDS_APP_TITLE, window.title, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_ULTRAENGINE, window.registerClass, MAX_LOADSTRING);
-    window.MyRegisterClass(hInstance);
-
-    // Anwendungsinitialisierung ausführen:
-    if (!window.InitInstance(hInstance, nCmdShow))
-    {
-        return FALSE;
-    }
-
+	if (!window.init(nCmdShow)) {
+		return FALSE;
+	}
+    
+	// Initialize application
 	UltraEngine::ApplicationController app = UltraEngine::ApplicationController::getInstance();
+
+	// Run application
 	app.run();
 
 	return TRUE;
